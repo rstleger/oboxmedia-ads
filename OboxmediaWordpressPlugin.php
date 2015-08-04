@@ -246,11 +246,15 @@ class OboxmediaWordpressPlugin{
      * @since    1.0.0
      */
     public function obox_header_action() {
+        global $post;
         if (defined('APPLICATION_ENV') && APPLICATION_ENV === 'DEV') {
             $baseURL = '//cdn.oboxads.local/v3';
         } else {
             $baseURL = '//cdn.oboxads.com/v3';
         } //if
+
+        $postId = (is_single() && $post ? $post->ID : 0);
+        
         echo <<<HTML
     <!-- OBOXADS Begin -->
     <script>
@@ -263,6 +267,12 @@ class OboxmediaWordpressPlugin{
         w[n] = w[n] || [];
         d.write(src);
     })(window, document, 'script', 'OBOXADSQ', 'hollywoodpq.com');
+    </script>
+    <script>
+        OBOXADSQ.push({
+            "postId": "{$postId}",
+            "cmd": "config"
+        });
     </script>
     <!-- OBOXADS End -->
 HTML;
