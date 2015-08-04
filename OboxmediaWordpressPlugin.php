@@ -72,9 +72,12 @@ class OboxmediaWordpressPlugin{
         add_action("admin_enqueue_scripts", array($this, "enqueue_admin_styles"));
         add_action("admin_enqueue_scripts", array($this, "enqueue_admin_scripts"));
 
+        // Init settings
+        add_action( 'admin_init', array($this, 'register_settings') );
+
         // Load public-facing style sheet and JavaScript.
-        add_action("wp_enqueue_scripts", array($this, "enqueue_styles"));
-        add_action("wp_enqueue_scripts", array($this, "enqueue_scripts"));
+        //add_action("wp_enqueue_scripts", array($this, "enqueue_styles"));
+        //add_action("wp_enqueue_scripts", array($this, "enqueue_scripts"));
 
         // Define custom functionality. Read more about actions and filters: http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
         add_action("wp_head", array($this, "obox_header_action"));
@@ -183,8 +186,7 @@ class OboxmediaWordpressPlugin{
      * @since    1.0.0
      */
     public function enqueue_styles() {
-        wp_enqueue_style($this->plugin_slug . "-plugin-styles", plugins_url("css/public.css", __FILE__), array(),
-            $this->version);
+        wp_enqueue_style($this->plugin_slug . "-plugin-styles", plugins_url("css/public.css", __FILE__), array(), $this->version);
     }
 
     /**
@@ -193,8 +195,7 @@ class OboxmediaWordpressPlugin{
      * @since    1.0.0
      */
     public function enqueue_scripts() {
-        wp_enqueue_script($this->plugin_slug . "-plugin-script", plugins_url("js/public.js", __FILE__), array("jquery"),
-            $this->version);
+        wp_enqueue_script($this->plugin_slug . "-plugin-script", plugins_url("js/public.js", __FILE__), array("jquery"), $this->version);
     }
 
     /**
@@ -206,6 +207,25 @@ class OboxmediaWordpressPlugin{
         $this->plugin_screen_hook_suffix = add_plugins_page(__("Oboxmedia Wordpress Plugin - Administration", $this->plugin_slug),
             __("Oboxmedia Wordpress Plugin", $this->plugin_slug), "read", $this->plugin_slug, array($this, "display_plugin_admin_page"));
     }
+
+    /**
+     * Initializes available settings for plugin
+     *
+     * @since  2015-06-19
+     * @author Patrick Forget <patforg@geekpad.ca>
+     */
+    public function register_settings() {
+        
+        add_settings_field( 
+            'oboxads_checkbox_field_0', 
+            __( 'Settings field description', 'oboxmedia-wordpress-plugin-locale' ), 
+            'oboxads_checkbox_field_0_render', 
+            'pluginPage', 
+            'oboxads_pluginPage_section' 
+        );
+
+    } // register_settings()
+
 
     /**
      * Render the settings page for this plugin.
@@ -226,43 +246,20 @@ class OboxmediaWordpressPlugin{
      * @since    1.0.0
      */
     public function obox_header_action() {
-        echo "<!--";
-        print_r($_SERVER);
-        echo "-->";
         echo <<<HTML
-            <script type="text/javascript" language="JavaScript">
-                (function() {
-                  var proto = (window.location.protocol == "https:" ? "https:" : "http:");
-                  document.writeln('<scr' + 'ipt type="text/ja' + 'vascr' + 'ipt" s' + 'rc="' +
-                              proto + '//cdn.oboxads.com/oboxads/oboxads-v2.1-min.js?ver=6' +
-                              '"></scr' + 'ipt>');
-
-                })();
-            </script>
-            <script type="text/javascript" language="JavaScript">
-            /*
-            <![CDATA[
-            */
-
-                OBOXADS.vars.lang = 'fr';
-                OBOXADS.vars.custom = "";
-                OBOXADS.vars.displayedAdSpot = [];
-                OBOXADS.vars.postID = '';
-                OBOXADS.vars.sectionPathName = 'home';
-                OBOXADS.vars.position = 1;
-                //var OBOX_pathParts = location.pathname.split('/');
-                //OBOXADS.vars.tag = (OBOX_pathParts.length >= 3 && OBOX_pathParts[1] == 'category' ? OBOX_pathParts[2] : '');
-
-                OBOXADS.vars.site = 'hollywoodpq.com';
-                OBOXADS.config.site = 'hollywoodpq.com';
-                OBOXADS.config.contestCount = 3;
-
-                OBOXADS.fn.init();
-              
-            /*
-            ]]>
-            */
-            </script>
+    <!-- OBOXADS Begin -->
+    <script>
+    (function (w,d,s,n,u) {
+        var e, 
+            src = [
+                '<', s, ' src="//cdn.oboxads.local/v3/sites/', u ,'-min.js',
+                '?cb=', new Date().getTime(),'"></', s ,'>'
+            ].join('');
+        w[n] = w[n] || [];
+        d.write(src);
+    })(window, document, 'script', 'OBOXADSQ', 'hollywoodpq.com');
+    </script>
+    <!-- OBOXADS End -->
 HTML;
     }
 
