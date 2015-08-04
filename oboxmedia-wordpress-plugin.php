@@ -29,6 +29,8 @@ if (!defined("WPINC")) {
 }
 
 require_once(plugin_dir_path(__FILE__) . "OboxmediaWordpressPlugin.php");
+require_once(plugin_dir_path(__FILE__) . "includes/oboxads-showAd-function.php");
+require_once(plugin_dir_path(__FILE__) . "includes/oboxads-ad-widget.php");
 
 // Register hooks that are fired when the plugin is activated, deactivated, and uninstalled, respectively.
 register_activation_hook(__FILE__, array("OboxmediaWordpressPlugin", "activate"));
