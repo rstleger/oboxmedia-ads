@@ -246,13 +246,18 @@ class OboxmediaWordpressPlugin{
      * @since    1.0.0
      */
     public function obox_header_action() {
+        if (defined('APPLICATION_ENV') && APPLICATION_ENV === 'DEV') {
+            $baseURL = '//cdn.oboxads.local/v3';
+        } else {
+            $baseURL = '//cdn.oboxads.com/v3';
+        } //if
         echo <<<HTML
     <!-- OBOXADS Begin -->
     <script>
     (function (w,d,s,n,u) {
         var e, 
             src = [
-                '<', s, ' src="//cdn.oboxads.local/v3/sites/', u ,'-min.js',
+                '<', s, ' src="{$baseURL}/sites/', u ,'-min.js',
                 '?cb=', new Date().getTime(),'"></', s ,'>'
             ].join('');
         w[n] = w[n] || [];
