@@ -9,15 +9,16 @@ function oboxads_ads_in_posts_render(  ) {
 }
 
 
-function oboxads_radio_field_1_render(  ) { 
+function oboxads_domain_render(  ) { 
 
 	$options = get_option( 'oboxads_settings' );
+    
+    $domain = (isset($options['oboxads_domain']) ? $options['oboxads_domain'] :  $_SERVER['SERVER_NAME'] );
 	?>
-	<input type='radio' name='oboxads_settings[oboxads_radio_field_1]' <?php checked( $options['oboxads_radio_field_1'], 1 ); ?> value='1'>
+	<input type='text' name='oboxads_settings[oboxads_domain]' value="<?php echo esc_attr( $domain ); ?>">
 	<?php
 
 }
-
 
 function oboxads_settings_section_callback(  ) { 
 
