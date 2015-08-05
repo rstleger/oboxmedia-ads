@@ -23,7 +23,7 @@ class OboxmediaAdsPlugin{
      *
      * @var     string
      */
-    protected $version = "1.0.3";
+    protected $version = "1.0.5";
 
     /**
      * Unique identifier for your plugin.
@@ -47,6 +47,11 @@ class OboxmediaAdsPlugin{
     protected static $instance = null;
 
     /**
+     * @var array
+     */
+    private $options = array();
+
+    /**
      * Slug of the plugin screen.
      *
      * @since    1.0.0
@@ -62,7 +67,7 @@ class OboxmediaAdsPlugin{
      */
     private function __construct() {
 
-        $options = get_option( 'oboxads_settings' );
+        $this->options = get_option( 'oboxads_settings' );
 
         // Load plugin text domain
         add_action("init", array($this, "load_plugin_textdomain"));
@@ -77,8 +82,8 @@ class OboxmediaAdsPlugin{
         add_action( 'oboxads_show_ad', 'oboxadsShowAd', 10, 2 );
 
         add_shortcode( 'oboxads', 'oboxads_shortcode' );
-        if (isset($options['oboxads_ads_in_posts']) 
-            && $options['oboxads_ads_in_posts'] === '1') {
+        if (isset($this->options['oboxads_ads_in_posts']) 
+            && $this->options['oboxads_ads_in_posts'] === '1') {
             add_filter( 'the_content', 'oboxads_insert_ads_in_posts', 99 );
         } //if
 
@@ -170,6 +175,14 @@ class OboxmediaAdsPlugin{
             'pluginPage', 
             'oboxads_pluginPage_section' 
         );
+
+        add_settings_field( 
+            'oboxads_domain', 
+            __( 'Website domain', 'oboxads' ), 
+            'oboxads_domain_render', 
+            'pluginPage', 
+            'oboxads_pluginPage_section' 
+        );
     } // admin_options_init()
 
     /**
@@ -190,6 +203,7 @@ class OboxmediaAdsPlugin{
         } //if
 
         $postId = (is_single() && $post ? $post->ID : 0);
+        $domain = (isset($this->options['oboxads_domain']) ? $this->options['oboxads_domain'] :  $_SERVER['SERVER_NAME'] );
         
         echo <<<HTML
     <!-- OBOXADS Begin -->
@@ -202,7 +216,7 @@ class OboxmediaAdsPlugin{
             ].join('');
         w[n] = w[n] || [];
         d.write(src);
-    })(window, document, 'script', 'OBOXADSQ', 'hollywoodpq.com');
+    })(window, document, 'script', 'OBOXADSQ', '{$domain}');
     </script>
     <script>
         OBOXADSQ.push({
