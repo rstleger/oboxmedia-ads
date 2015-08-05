@@ -15,6 +15,7 @@
  * Plugin URI:  http://oboxmedia.com
  * Description: Provides an easy way to implement Oboxmedia's ad solution
  * Version:     1.0.5
+>>>>>>> 77434b7e82118a3657a716323ca3e7e3c9b1a327
  * Author:      Patrick Forget
  * Author URI:  http://oboxmedia.com
  * Text Domain: oboxads
